@@ -19,6 +19,7 @@ app.get("/", (req, response) => {
   response.status(201).send({ msg: "Helloo world" });
 });
 app.get("/api/users", (request, response) => {
+  console.log(request.query);
   response.send(mockUsers);
 });
 

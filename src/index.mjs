@@ -9,18 +9,26 @@ const mockProducts = [
   { id: 3, name: "Burger", price: 12.79 },
 ];
 const mockUsers = [
-  { id: 1, username: "Thor", displayName: "Yves" },
-  { id: 2, username: "Assia", displayName: "Massiah" },
-  { id: 3, username: "Esther", displayName: "Hommy" },
-  { id: 4, username: "Thorine", displayName: "lizzy" },
-  { id: 5, username: "Locky", displayName: "wizard" },
+  { id: 1, username: "thor", displayName: "yves" },
+  { id: 2, username: "assia", displayName: "massiah" },
+  { id: 3, username: "esther", displayName: "hommy" },
+  { id: 4, username: "thorine", displayName: "lizzy" },
+  { id: 5, username: "locky", displayName: "wizard" },
 ];
-app.get("/", (req, response) => {
+app.get("/", (request, response) => {
   response.status(201).send({ msg: "Helloo world" });
 });
 app.get("/api/users", (request, response) => {
+  // Query string
   console.log(request.query);
-  response.send(mockUsers);
+  const { query: { filter, value },
+  } = request;
+  // if (!filter && !value) return response.send(mockUsers)// when the values of filter and value are undefined
+  // //
+  if (filter && value) return response.send(
+    mockUsers.filter((user) => user[filter].includes(value))
+  );
+  return response.send(mockUsers);
 });
 
 app.get('/api/products', (request, response) => {
@@ -31,6 +39,7 @@ app.get("/api/users/:id", (request, response) => {
   console.log(request.params);
   const parsedId = parseInt(request.params.id);
   console.log(parsedId);
+  // Checking the validity of a param
   if (isNaN(parsedId)) return response.status(400).send({ msg: "Bad request. Invalid ID" });
   const findUser = mockUsers.find((user) => user.id === parsedId)
   if (!findUser) return response.sendStatus(404);
@@ -45,7 +54,7 @@ app.get("/api/products/:id", (req, resp) => {
   const useFindMethod = mockProducts.find((product) => product.id === makeInt)
   if (!useFindMethod) return resp.sendStatus(404);
   return resp.send(useFindMethod);
-})
+});
 app.listen(PORT, () => {
   console.log(`Running on port ${PORT}`);
 });

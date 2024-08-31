@@ -1,6 +1,7 @@
-import express from "express";
+import express, { response } from "express";
 
 const app = express();
+app.use(express.json())
 
 const PORT = process.env.PORT || 5500;
 const mockProducts = [
@@ -30,6 +31,10 @@ app.get("/api/users", (request, response) => {
   );
   return response.send(mockUsers);
 });
+app.post('/api/users', (request, response) => {
+  console.log(request.body)
+  return response.send(200);
+})
 
 app.get('/api/products', (request, response) => {
   response.send(mockProducts);

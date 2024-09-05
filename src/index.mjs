@@ -31,9 +31,13 @@ app.get("/api/users", (request, response) => {
   );
   return response.send(mockUsers);
 });
+// Sending the data with POST
 app.post('/api/users', (request, response) => {
-  console.log(request.body)
-  return response.send(200);
+  // console.log(request.body)
+  const { body } = request;
+  const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...body };
+  mockUsers.push(newUser)
+  return response.status(201).send(newUser);
 })
 
 app.get('/api/products', (request, response) => {
@@ -60,6 +64,26 @@ app.get("/api/products/:id", (req, resp) => {
   if (!useFindMethod) return resp.sendStatus(404);
   return resp.send(useFindMethod);
 });
+
+// PUT Request
+app.put("/api/users/:id", (request, response) => {
+  const {
+    body,
+    params: { id },
+  } = request;
+  const parsedId = parseInt(id);
+  if (isNaN(parsedId)) return response.sendStatus(400);
+  const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+  if (findUserIndex === -1) return response.sendStatus(404);
+  mockUsers[findUserIndex] = { id: parsedId, ...body };
+  return response.sendStatus(200);
+})
+// PATCH Request
+app.patch()
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Running on port ${PORT}`);
 });

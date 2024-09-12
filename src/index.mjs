@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express, { request, response } from "express";
 
 const app = express();
 app.use(express.json())
@@ -79,7 +79,16 @@ app.put("/api/users/:id", (request, response) => {
   return response.sendStatus(200);
 })
 // PATCH Request
-app.patch()
+app.patch('/api/user/:id', (request, response) => {
+  const {
+    body,
+    params = { id },
+  } = request;
+  const parsedId = parseInt(id)
+  if (isNaN(parsedId)) return response.sendStatus(400);
+  const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+  if (findUserIndex === -1) return response.sendStatus(404)
+})
 
 
 

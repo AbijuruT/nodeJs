@@ -82,12 +82,22 @@ app.put("/api/users/:id", (request, response) => {
 app.patch('/api/user/:id', (request, response) => {
   const {
     body,
-    params = { id },
+    params: { id },
   } = request;
   const parsedId = parseInt(id)
   if (isNaN(parsedId)) return response.sendStatus(400);
   const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
   if (findUserIndex === -1) return response.sendStatus(404)
+  mockUsers[findUserIndex] = { ...mockUsers[findUserIndex], ...body };
+
+})
+app.delete("/api/users/:id", (request, response) => {
+  const parsedId = parseInt(id);
+  if (isNaN(parsedId)) return response.sendStatus(400);
+  const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+  if (findUserIndex === -1) return response.sendStatus(404);
+  mockUsers.splice(findUserIndex);
+  return response.sendStatus(200)
 })
 
 

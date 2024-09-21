@@ -3,6 +3,11 @@ import express, { request, response } from "express";
 const app = express();
 app.use(express.json())
 
+const loggigngMiddleware = (request, response, next) => {
+  console.log(`${request.method} - ${request.url}`);
+  next()
+}
+app.use(loggigngMiddleware);
 const PORT = process.env.PORT || 5500;
 const mockProducts = [
   { id: 1, name: "Chiken", price: 12.99 },

@@ -7,7 +7,19 @@ const loggigngMiddleware = (request, response, next) => {
   console.log(`${request.method} - ${request.url}`);
   next()
 }
-app.use(loggigngMiddleware);
+app.use(loggigngMiddleware);//registered globally
+
+const resolveUserById = (request, response, next) => {
+  const {
+    params: { id },
+  } = request;
+  const parsedId = parseInt(id);
+  if (isNaN(parsedId)) return response.sendStatus(400);
+  const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
+  if (findUserIndex === -1) return response.sendStatus(404);
+  request.findUserIndex = findUserIndex;
+  next();
+}
 const PORT = process.env.PORT || 5500;
 const mockProducts = [
   { id: 1, name: "Chiken", price: 12.99 },
@@ -21,7 +33,8 @@ const mockUsers = [
   { id: 4, username: "thorine", displayName: "lizzy" },
   { id: 5, username: "locky", displayName: "wizard" },
 ];
-app.get("/", (request, response) => {
+app.get("/", loggigngMiddleware, (request, response) => {
+  //adding middleware only for this particular endpont passing it as a parameter
   response.status(201).send({ msg: "Helloo world" });
 });
 app.get("/api/users", (request, response) => {
@@ -83,6 +96,8 @@ app.put("/api/users/:id", (request, response) => {
   mockUsers[findUserIndex] = { id: parsedId, ...body };
   return response.sendStatus(200);
 })
+// middle ware to grab the user index
+
 // PATCH Request
 app.patch('/api/user/:id', (request, response) => {
   const {

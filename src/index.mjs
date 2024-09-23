@@ -62,13 +62,10 @@ app.get('/api/products', (request, response) => {
   response.send(mockProducts);
 });
 //Route parameter on users endPoint
-app.get("/api/users/:id", (request, response) => {
-  console.log(request.params);
-  const parsedId = parseInt(request.params.id);
-  console.log(parsedId);
-  // Checking the validity of a param
-  if (isNaN(parsedId)) return response.status(400).send({ msg: "Bad request. Invalid ID" });
-  const findUser = mockUsers.find((user) => user.id === parsedId)
+app.get("/api/users/:id", resolveUserById, (request, response) => {
+  const { findUserIndex } = request;
+  const findUser = mockUsers[findUserIndex]
+
   if (!findUser) return response.sendStatus(404);
   return response.send(findUser);
 });

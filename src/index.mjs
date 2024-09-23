@@ -84,16 +84,9 @@ app.get("/api/products/:id", (req, resp) => {
 });
 
 // PUT Request
-app.put("/api/users/:id", (request, response) => {
-  const {
-    body,
-    params: { id },
-  } = request;
-  const parsedId = parseInt(id);
-  if (isNaN(parsedId)) return response.sendStatus(400);
-  const findUserIndex = mockUsers.findIndex((user) => user.id === parsedId);
-  if (findUserIndex === -1) return response.sendStatus(404);
-  mockUsers[findUserIndex] = { id: parsedId, ...body };
+app.put("/api/users/:id", resolveUserById, (request, response) => {
+  const { body, findUserIndex } = request;
+  mockUsers[findUserIndex] = { id: mockUsers[findUserIndex].id, ...body };
   return response.sendStatus(200);
 })
 // middle ware to grab the user index
